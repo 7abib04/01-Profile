@@ -1,9 +1,11 @@
 "use client";
-
+import { useRouter } from 'next/navigation'; // Correct hook for app directory
 import React from "react";
 import "../styles/login.css";
 
 function Login() {
+  const router = useRouter();
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
@@ -22,17 +24,16 @@ function Login() {
       });
 
       if (!response.ok) {
-        console.log(response.status)
-        //TODO function to handle the error, and show a message to the user
+        console.log(response.status);
+        alert("Login failed. Please check your email and password.");
       } else {
-        console.log("ok");
-        console.log(response)
+        console.log("The user is logged in");
         const token = await response.json();
-        // store the token in local storage or session storage
         localStorage.setItem('jwt', token);
+        router.push('/profile'); // Redirect after successful login
       }
     } catch (error) {
-      console.error("err", error);
+      console.error("error: ", error);
     }
   };
 
@@ -40,7 +41,6 @@ function Login() {
     <div className="login-container">
       <p className="h1">Hello Rebooter</p>
       <p className="h3">Sign in to your 01 account</p>
-      {/* Attach the `handleLogin` function to onSubmit */}
       <form className="login-form" onSubmit={handleLogin}>
         <div className="input-group">
           <label>Email</label>
@@ -59,7 +59,6 @@ function Login() {
             <input type="checkbox" /> Show password
           </label>
         </div>
-        {/* Ensure the button has type="submit" so it triggers form submission */}
         <button className="login-button" type="submit">
           Sign in
         </button>
