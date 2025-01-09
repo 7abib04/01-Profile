@@ -3,7 +3,8 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { gql, useQuery } from '@apollo/client';
-
+import CollapsibleCard from '../../components/collapseCard';
+import "../../styles/profile.css";
 
 const GET_PROFILE_DATA = gql`
   query {
@@ -66,11 +67,12 @@ export default function Profile() {
       </div>
     );
   }
-  console.log(data);
   return (
     <div className="profile-container">
      <h1>Profile Page {data.user[0].login}</h1>
      
+        <CollapsibleCard userData={data.user[0]} />
+      
     </div>
   );
 }
