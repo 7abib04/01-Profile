@@ -1,5 +1,5 @@
-import Image from "next/image";
-import LoginForm from "@/components/myComponents/login";
+'use client'
+import {LoginForm} from "@/components/myComponents/login";
 export default function Home() {
   return (
     <div className={`flex flex-col items-center justify-center min-h-screen bg-[#1a191c]  p-4`}>
