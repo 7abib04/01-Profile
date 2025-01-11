@@ -1,15 +1,17 @@
 'use client';
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useLazyQuery } from '@apollo/client';
 import ProfileCard from '@/components/myComponents/userCard';
-import ProjectGradesChart from '@/components/graphs/lineChart';
 import XpGainedChart from '@/components/graphs/lineChart';
 import XPChart from '@/components/graphs/barChart';
+import SkillsRadarChart from '@/components/graphs/radarChart';
+import ProjectPassFailChart from '@/components/graphs/pieChart';
 
-const GET_PROFILE_DATA = gql`
-  query {
-    user { 
+const GET_USER_PROFILE = gql`
+  query GetUserProfile {
+    user {
       id
       login
       campus
@@ -17,23 +19,78 @@ const GET_PROFILE_DATA = gql`
       auditRatio
       totalDown
       totalUp
-
     }
-  
-    transaction(where: {  type: { _eq: "xp" } } ) {
+    xpTransactions: transaction(where: { type: { _eq: "xp" } }) {
       amount
-      createdAt   
+      createdAt
+    }
+    skillTransactions: transaction(
+      where: {
+        _and: [
+          { type: { _neq: "xp" } },
+          { type: { _neq: "up" } },
+          { type: { _neq: "down" } },
+          { type: { _neq: "level" } }
+        ]
+      }
+    ) {
+      type
+      amount
     }
   }
 `;
+
+const GET_FAIL_AUDIT_AGGREGATE = gql`
+  query GetFailAuditAggregate($login: String!) {
+    audit_aggregate(
+      where: { grade: { _lt: "1" }, auditor: { login: { _eq: $login } } }
+    ) {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+const GET_PASS_AUDIT_AGGREGATE = gql`
+  query GetPassAuditAggregate($login: String!) {
+    audit_aggregate(
+      where: { grade: { _gte: "1" }, auditor: { login: { _eq: $login } } }
+    ) {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+
 export default function Profile() {
   const router = useRouter();
-  const { loading, error, data } = useQuery(GET_PROFILE_DATA);
+  const [userLogin, setUserLogin] = useState<string | null>(null);
+  const { loading, error, data } = useQuery(GET_USER_PROFILE);
+
+  const [fetchFailAuditAggregate, { data: failAuditData, loading: failAuditLoading }] =
+    useLazyQuery(GET_FAIL_AUDIT_AGGREGATE);
+
+  const [fetchPassAuditAggregate, { data: passAuditData, loading: passAuditLoading }] =
+    useLazyQuery(GET_PASS_AUDIT_AGGREGATE);
+
+  useEffect(() => {
+    if (data?.user?.[0]?.login) {
+      const login = data.user[0].login;
+      setUserLogin(login);
+      fetchFailAuditAggregate({ variables: { login } });
+      fetchPassAuditAggregate({ variables: { login } });
+    }
+  }, [data, fetchFailAuditAggregate, fetchPassAuditAggregate]);
+
   const handleLogout = () => {
     localStorage.removeItem('jwt');
     router.push('/');
   };
-  if (loading) {
+
+  if (loading || failAuditLoading || passAuditLoading) {
     return (
       <div className="profile-container">
         <h1>Profile Page</h1>
@@ -44,6 +101,7 @@ export default function Profile() {
       </div>
     );
   }
+
   if (error || !data) {
     return (
       <div className="profile-container">
@@ -51,21 +109,28 @@ export default function Profile() {
         <button onClick={handleLogout} className="logout">
           Logout
         </button>
-        <p style={{ color: 'red' }}>Error loading data.{error?.message}</p>
+        <p style={{ color: 'red' }}>Error loading data. {error?.message}</p>
       </div>
     );
   }
+
+  const PassFail=[
+    { name: 'Passed', value: passAuditData?.audit_aggregate?.aggregate?.count  },
+    { name: 'Failed', value: failAuditData?.audit_aggregate?.aggregate?.count  },
+  ]
+
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <h1 className="text-3xl font-bold mb-8">User Profile</h1>
       <div className="grid grid-cols-1 gap-8">
         <ProfileCard user={data.user[0]} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <ProjectGradesChart response={data} />
+          <XpGainedChart response={data} />
           <XPChart data={data.user[0]} />
+          <SkillsRadarChart data={data.skillTransactions} />
+          <ProjectPassFailChart data={PassFail}/>
         </div>
       </div>
     </div>
   );
 }
-

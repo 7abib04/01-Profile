@@ -11,7 +11,7 @@ interface TransactionItem {
 }
 
 interface APIResponse {
-  transaction: TransactionItem[];
+    xpTransactions: TransactionItem[];
 }
 
 interface XpChartProps {
@@ -23,7 +23,7 @@ export default function XpGainedChart({ response }: XpChartProps) {
   const startDate = startOfMonth(subMonths(today, 5)); // Start 6 months ago
 
   // transform the response into monthly xP 
-  const rawData = response.transaction.map(item => ({
+  const rawData = response.xpTransactions.map(item => ({
     month: format(startOfMonth(parseISO(item.createdAt)), "yyyy-MM"),
     amount: item.amount,
   }));
