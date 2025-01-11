@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChevronDown, ChevronUp } from 'lucide-react'
 
 interface User {
+  id: string;
+  login: string;
+  campus: string;
   attrs: {
     firstName: string;
     lastName: string;
