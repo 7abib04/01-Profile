@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { gql, useQuery } from '@apollo/client';
 import ProfileCard from '@/components/myComponents/userCard';
 import ProjectGradesChart from '@/components/graphs/lineChart';
+import XpGainedChart from '@/components/graphs/lineChart';
+import XPChart from '@/components/graphs/barChart';
 
 const GET_PROFILE_DATA = gql`
   query {
@@ -12,6 +14,10 @@ const GET_PROFILE_DATA = gql`
       login
       campus
       attrs
+      auditRatio
+      totalDown
+      totalUp
+
     }
   
     transaction(where: {  type: { _eq: "xp" } } ) {
@@ -56,6 +62,7 @@ export default function Profile() {
         <ProfileCard user={data.user[0]} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <ProjectGradesChart response={data} />
+          <XPChart data={data.user[0]} />
         </div>
       </div>
     </div>
