@@ -8,6 +8,8 @@ import XpGainedChart from '@/components/graphs/lineChart';
 import XPChart from '@/components/graphs/barChart';
 import SkillsRadarChart from '@/components/graphs/radarChart';
 import ProjectPassFailChart from '@/components/graphs/pieChart';
+import Navbar from '@/components/myComponents/navBar';
+
 
 const GET_USER_PROFILE = gql`
   query GetUserProfile {
@@ -85,18 +87,12 @@ export default function Profile() {
     }
   }, [data, fetchFailAuditAggregate, fetchPassAuditAggregate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('jwt');
-    router.push('/');
-  };
-
+  
   if (loading || failAuditLoading || passAuditLoading) {
     return (
       <div className="profile-container">
         <h1>Profile Page</h1>
-        <button onClick={handleLogout} className="logout">
-          Logout
-        </button>
+       
         <p>Loading...</p>
       </div>
     );
@@ -106,9 +102,7 @@ export default function Profile() {
     return (
       <div className="profile-container">
         <h1>Profile Page</h1>
-        <button onClick={handleLogout} className="logout">
-          Logout
-        </button>
+       
         <p style={{ color: 'red' }}>Error loading data. {error?.message}</p>
       </div>
     );
@@ -120,8 +114,10 @@ export default function Profile() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
-      <h1 className="text-3xl font-bold mb-8">User Profile</h1>
+   <>
+    <Navbar/>
+     <div className="min-h-screen bg-gray-900 text-white p-8">
+      <h1 className="text-3xl font-bold mb-8">Welcome {data.user[0].login} #{data.user[0].id}</h1>
       <div className="grid grid-cols-1 gap-8">
         <ProfileCard user={data.user[0]} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -132,5 +128,6 @@ export default function Profile() {
         </div>
       </div>
     </div>
+   </>
   );
 }
