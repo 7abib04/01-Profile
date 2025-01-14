@@ -9,8 +9,9 @@ import XPChart from '@/components/graphs/barChart';
 import SkillsRadarChart from '@/components/graphs/radarChart';
 import ProjectPassFailChart from '@/components/graphs/pieChart';
 import Navbar from '@/components/myComponents/navBar';
-import ProjectList from '@/components/myComponents/list';
+import ProjectList from '@/components/myComponents/ProjectsList';
 import Loading from '@/components/myComponents/loading';
+import AuditList from '@/components/myComponents/auditList';
 
 const GET_USER_PROFILE = gql`
   query GetUserProfile {
@@ -22,6 +23,18 @@ const GET_USER_PROFILE = gql`
       auditRatio
       totalDown
       totalUp
+      audits_aggregate(
+        where: { grade: { _is_null: false } }
+        order_by: { createdAt: desc }
+      ) {
+        nodes {
+          grade
+          group {
+            captainLogin
+            createdAt
+          }
+        }
+      }
     }
     xpTransactions: transaction(where: { type: { _eq: "xp" } }) {
       amount
@@ -40,20 +53,21 @@ const GET_USER_PROFILE = gql`
       type
       amount
     }
-    ProjectsList:  transaction(
-    where: {
-      type: { _eq: "xp" }
-      object: { type: { _eq: "project" } }
+    ProjectsList: transaction(
+      where: {
+        type: { _eq: "xp" }
+        object: { type: { _eq: "project" } }
+      }
+      order_by: { createdAt: asc }
+    ) {
+      amount
+      object {
+        name
+      }
     }
-    order_by: { createdAt: asc }
-  ) {
-    amount
-    object {
-      name
-    }
-  }
   }
 `;
+
 
 const GET_FAIL_AUDIT_AGGREGATE = gql`
   query GetFailAuditAggregate($login: String!) {
@@ -128,8 +142,9 @@ export default function Profile() {
         </h1>
         <div className="grid grid-cols-1 gap-8">
           <ProfileCard user={data.user[0]} />
-          <ProjectList transactions={data.ProjectsList} />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <ProjectList transactions={data.ProjectsList} />
+          <AuditList nodes={data.user[0].audits_aggregate.nodes} />
             <XpGainedChart response={data} />
             <XPChart data={data.user[0]} />
             <SkillsRadarChart data={data.skillTransactions} />

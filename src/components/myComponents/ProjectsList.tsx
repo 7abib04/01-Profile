@@ -33,7 +33,7 @@ export default function ProjectList({ transactions }: ProjectListProps) {
               <ProjectCard
                 key={index}
                 name={transaction.object.name}
-                xp={(transaction.amount/1000) }
+                result={(transaction.amount/1000).toFixed(2).toString()+" XP" }
               />
             ))}
           </div>
