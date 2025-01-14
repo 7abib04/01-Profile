@@ -8,14 +8,14 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("jwt");
-    router.push("/");
+    window.location.href = '/';
   };
 
   return (
     <nav className="bg-gray-800 border-b border-gray-700">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center space-x-3">
+          <Link href="/profile" className="flex items-center space-x-3">
             <img src="/image.svg" alt="Logo" className="h-9 w-9" />
           </Link>
           <Button

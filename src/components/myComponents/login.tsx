@@ -11,6 +11,8 @@ export  function LoginForm() {
   const router = useRouter();
 
   return (
+    <>
+
     <form
       className="space-y-6"
       onSubmit={(e) => HandleLogin(e, router)} // Pass router correctly
@@ -58,5 +60,6 @@ export  function LoginForm() {
         <ArrowRight className="ml-2" size={20} />
       </Button>
     </form>
+    </>
   );
 }

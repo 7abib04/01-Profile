@@ -22,6 +22,7 @@ export const HandleLogin = async (e: React.FormEvent<HTMLFormElement> , router: 
     } else {
     //   alert("The user is logged in");
       const token = await response.json();
+      localStorage.removeItem("jwt")
       localStorage.setItem('jwt', token);
       router.push('/profile'); 
     }

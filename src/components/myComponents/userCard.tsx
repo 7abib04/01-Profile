@@ -12,7 +12,7 @@ interface User {
     firstName: string;
     lastName: string;
     email: string;
-    Phone: string;
+    PhoneNumber: string;
     gender: string;
     country: string;
     Degree: string;
@@ -33,7 +33,7 @@ export default function ProfileCard({ user }: ProfileCardProps) {
   const userInfo = {
     name: user.attrs.firstName + ' ' + user.attrs.lastName,
     email: user.attrs.email,
-    phone: user.attrs.Phone,
+    PhoneNumber: user.attrs.PhoneNumber,
     degree: user.attrs.Degree,
     placeOfBirth: user.attrs.placeOfBirth
   }
@@ -59,7 +59,7 @@ export default function ProfileCard({ user }: ProfileCardProps) {
           <div className="mt-4 space-y-4">
             <div>
               <p className="text-sm text-gray-400">Phone Number</p>
-              <p className="text-lg font-medium">{userInfo.phone}</p>
+              <p className="text-lg font-medium">{userInfo.PhoneNumber}</p>
             </div>
             <div>
               <p className="text-sm text-gray-400">Degree</p>

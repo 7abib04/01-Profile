@@ -9,7 +9,8 @@ import XPChart from '@/components/graphs/barChart';
 import SkillsRadarChart from '@/components/graphs/radarChart';
 import ProjectPassFailChart from '@/components/graphs/pieChart';
 import Navbar from '@/components/myComponents/navBar';
-
+import ProjectList from '@/components/myComponents/list';
+import Loading from '@/components/myComponents/loading';
 
 const GET_USER_PROFILE = gql`
   query GetUserProfile {
@@ -39,6 +40,18 @@ const GET_USER_PROFILE = gql`
       type
       amount
     }
+    ProjectsList:  transaction(
+    where: {
+      type: { _eq: "xp" }
+      object: { type: { _eq: "project" } }
+    }
+    order_by: { createdAt: asc }
+  ) {
+    amount
+    object {
+      name
+    }
+  }
   }
 `;
 
@@ -66,7 +79,6 @@ const GET_PASS_AUDIT_AGGREGATE = gql`
   }
 `;
 
-
 export default function Profile() {
   const router = useRouter();
   const [userLogin, setUserLogin] = useState<string | null>(null);
@@ -87,14 +99,9 @@ export default function Profile() {
     }
   }, [data, fetchFailAuditAggregate, fetchPassAuditAggregate]);
 
-  
   if (loading || failAuditLoading || passAuditLoading) {
     return (
-      <div className="profile-container">
-        <h1>Profile Page</h1>
-       
-        <p>Loading...</p>
-      </div>
+      <Loading/>
     );
   }
 
@@ -102,32 +109,34 @@ export default function Profile() {
     return (
       <div className="profile-container">
         <h1>Profile Page</h1>
-       
         <p style={{ color: 'red' }}>Error loading data. {error?.message}</p>
       </div>
     );
   }
 
-  const PassFail=[
-    { name: 'Passed', value: passAuditData?.audit_aggregate?.aggregate?.count  },
-    { name: 'Failed', value: failAuditData?.audit_aggregate?.aggregate?.count  },
-  ]
+  const PassFail = [
+    { name: 'Passed', value: passAuditData?.audit_aggregate?.aggregate?.count },
+    { name: 'Failed', value: failAuditData?.audit_aggregate?.aggregate?.count },
+  ];
 
   return (
-   <>
-    <Navbar/>
-     <div className="min-h-screen bg-gray-900 text-white p-8">
-      <h1 className="text-3xl font-bold mb-8">Welcome {data.user[0].login} #{data.user[0].id}</h1>
-      <div className="grid grid-cols-1 gap-8">
-        <ProfileCard user={data.user[0]} />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <XpGainedChart response={data} />
-          <XPChart data={data.user[0]} />
-          <SkillsRadarChart data={data.skillTransactions} />
-          <ProjectPassFailChart data={PassFail}/>
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-gray-900 text-white p-8">
+        <h1 className="text-3xl font-bold mb-8">
+          Welcome {data.user[0].login} #{data.user[0].id}
+        </h1>
+        <div className="grid grid-cols-1 gap-8">
+          <ProfileCard user={data.user[0]} />
+          <ProjectList transactions={data.ProjectsList} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <XpGainedChart response={data} />
+            <XPChart data={data.user[0]} />
+            <SkillsRadarChart data={data.skillTransactions} />
+            <ProjectPassFailChart data={PassFail} />
+          </div>
         </div>
       </div>
-    </div>
-   </>
+    </>
   );
 }
