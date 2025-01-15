@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import handleLogout from "@/app/functions/logout";
 
 export default function Navbar() {
-  const router = useRouter();
 
   
 

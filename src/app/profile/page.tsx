@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { gql, useQuery, useLazyQuery } from '@apollo/client';
 import ProfileCard from '@/components/myComponents/userCard';
 import XpGainedChart from '@/components/graphs/lineChart';
@@ -94,7 +93,6 @@ const GET_PASS_AUDIT_AGGREGATE = gql`
 `;
 
 export default function Profile() {
-  const router = useRouter();
   const [userLogin, setUserLogin] = useState<string | null>(null);
   const { loading, error, data } = useQuery(GET_USER_PROFILE);
 

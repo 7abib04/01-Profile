@@ -12,7 +12,7 @@ interface ProjectListProps {
 }
 
 export default function ProjectList({ transactions }: ProjectListProps) {
-  const [scrollPosition, setScrollPosition] = useState(0)
+  const [_, setScrollPosition] = useState(0)
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     setScrollPosition(e.currentTarget.scrollTop)
