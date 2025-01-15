@@ -12,7 +12,6 @@ import ProjectList from '@/components/myComponents/ProjectsList';
 import Loading from '@/components/myComponents/loading';
 import AuditList from '@/components/myComponents/auditList';
 import Errorview from '@/components/myComponents/error';
-import { u } from 'framer-motion/client';
 
 const GET_USER_PROFILE = gql`
   query GetUserProfile {
