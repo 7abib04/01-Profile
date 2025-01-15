@@ -1,7 +1,5 @@
-'use client';
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, TooltipProps } from 'recharts';
 
 interface AuditRatio {
   auditRatio: number;
@@ -25,7 +23,7 @@ export default function XPChart({ data }: ProjectPassFailChartProps) {
     { name: 'Receive', value: data.totalDown / 1000000 },
   ];
 
-  const renderCustomTooltip = ({ active, payload }: { active?: boolean; payload?: any }) => {
+  const renderCustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload as ChartData; // Safely cast to ChartData
       return (

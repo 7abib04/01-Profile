@@ -12,8 +12,8 @@ interface auditListProps {
 }
 
 export default function AuditList({ nodes }: auditListProps) {
-  const [_, setScrollPosition] = useState(0)
-
+  const [scrollPosition, setScrollPosition] = useState(0)
+  console.log(scrollPosition)
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     setScrollPosition(e.currentTarget.scrollTop)
   }

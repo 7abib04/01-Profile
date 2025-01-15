@@ -12,6 +12,7 @@ import ProjectList from '@/components/myComponents/ProjectsList';
 import Loading from '@/components/myComponents/loading';
 import AuditList from '@/components/myComponents/auditList';
 import Errorview from '@/components/myComponents/error';
+import { u } from 'framer-motion/client';
 
 const GET_USER_PROFILE = gql`
   query GetUserProfile {
@@ -95,7 +96,7 @@ const GET_PASS_AUDIT_AGGREGATE = gql`
 export default function Profile() {
   const [userLogin, setUserLogin] = useState<string | null>(null);
   const { loading, error, data } = useQuery(GET_USER_PROFILE);
-
+  console.log(userLogin);
   const [fetchFailAuditAggregate, { data: failAuditData, loading: failAuditLoading }] =
     useLazyQuery(GET_FAIL_AUDIT_AGGREGATE);
 

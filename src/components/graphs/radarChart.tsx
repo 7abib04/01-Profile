@@ -1,7 +1,16 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } from 'recharts';
+import {
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
+  ResponsiveContainer,
+  Tooltip,
+  TooltipProps,
+} from 'recharts';
 
 interface Skills {
   type: string;
@@ -25,6 +34,22 @@ export default function SkillsRadarChart({ data }: ChartProps) {
     return acc;
   }, [] as Skills[]);
 
+  const renderCustomTooltip = ({
+    active,
+    payload,
+  }: TooltipProps<number, string>) => {
+    if (active && payload && payload.length) {
+      const { type, amount } = payload[0].payload as Skills;
+      return (
+        <div className="bg-gray-700 p-2 rounded-md">
+          <p className="text-sm font-bold">{type}</p>
+          <p className="text-sm">Amount: {amount}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <Card className="bg-gray-800 text-white">
       <CardHeader>
@@ -39,22 +64,11 @@ export default function SkillsRadarChart({ data }: ChartProps) {
               <RadarChart cx="50%" cy="50%" outerRadius="80%" data={groupedData}>
                 <PolarGrid stroke="rgba(255, 255, 255, 0.3)" />
                 <PolarAngleAxis dataKey="type" stroke="rgba(255, 255, 255, 0.6)" />
-                <PolarRadiusAxis angle={30} domain={[0, Math.max(...groupedData.map((d) => d.amount))]} />
-                <Tooltip
-                  content={(props: any) => {
-                    const { payload } = props;
-                    if (payload && payload.length) {
-                      const { type, amount } = payload[0].payload;
-                      return (
-                        <div className="bg-gray-700 p-2 rounded-md">
-                          <p className="text-sm font-bold">{type}</p>
-                          <p className="text-sm">Amount: {amount}</p>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
+                <PolarRadiusAxis
+                  angle={30}
+                  domain={[0, Math.max(...groupedData.map((d) => d.amount))]}
                 />
+                <Tooltip content={renderCustomTooltip} />
                 <Radar
                   name="Skill Level"
                   dataKey="amount"
