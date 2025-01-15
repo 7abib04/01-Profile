@@ -43,7 +43,7 @@ export default function Errorview({ message }: ErrorviewProps) {
           <Button onClick={handleLogout} 
             className="bg-[rgb(153,105,255)] hover:bg-[rgb(171,133,253)] text-white"
           >
-            logout
+            login page
             
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>

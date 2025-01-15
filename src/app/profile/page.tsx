@@ -122,7 +122,7 @@ export default function Profile() {
 
   if (error || !data) {
     return (
-      <Errorview message="Error fetching user data" />
+      localStorage.getItem("jwt")? <Errorview message="Error fetching user data" /> : <Errorview message="you must login first" />
     );
   }
 
