@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
+import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface Skills {
   type: string;
@@ -13,12 +13,14 @@ interface ChartProps {
 }
 
 export default function SkillsRadarChart({ data }: ChartProps) {
+  // Preprocess the data to trim "skill_" prefix and group by skill type
   const groupedData = data.reduce((acc, curr) => {
-    const existingSkill = acc.find((item) => item.type === curr.type);
+    const trimmedType = curr.type.replace(/^skill_/, ''); // Remove "skill_" prefix
+    const existingSkill = acc.find((item) => item.type === trimmedType);
     if (existingSkill) {
       existingSkill.amount += curr.amount;
     } else {
-      acc.push({ type: curr.type, amount: curr.amount });
+      acc.push({ type: trimmedType, amount: curr.amount });
     }
     return acc;
   }, [] as Skills[]);
@@ -38,6 +40,21 @@ export default function SkillsRadarChart({ data }: ChartProps) {
                 <PolarGrid stroke="rgba(255, 255, 255, 0.3)" />
                 <PolarAngleAxis dataKey="type" stroke="rgba(255, 255, 255, 0.6)" />
                 <PolarRadiusAxis angle={30} domain={[0, Math.max(...groupedData.map((d) => d.amount))]} />
+                <Tooltip
+                  content={(props: any) => {
+                    const { payload } = props;
+                    if (payload && payload.length) {
+                      const { type, amount } = payload[0].payload;
+                      return (
+                        <div className="bg-gray-700 p-2 rounded-md">
+                          <p className="text-sm font-bold">{type}</p>
+                          <p className="text-sm">Amount: {amount}</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
                 <Radar
                   name="Skill Level"
                   dataKey="amount"

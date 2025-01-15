@@ -16,13 +16,13 @@ interface ProjectPassFailChartProps {
 export default function XPChart({ data }: ProjectPassFailChartProps) {
   const chartData = [
     { name: 'Done', value: data.totalUp / 1000000 }, // Convert to megabytes
-    { name: 'Received', value: data.totalDown / 1000000 },
+    { name: 'Receive', value: data.totalDown / 1000000 },
   ];
 
   return (
     <Card className="bg-gray-800 text-white">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">XP Distribution</CardTitle>
+        <CardTitle className="text-2xl font-bold">Audit Ratio</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[300px] w-full">
@@ -56,8 +56,10 @@ export default function XPChart({ data }: ProjectPassFailChartProps) {
         </div>
         <div className="bg-gray-700 rounded-lg p-4 text-center mt-4">
           <p className="text-xl font-bold">Audit Ratio</p>
-          <p className="text-4xl font-extrabold text-green-400">
-            {data.auditRatio.toFixed(1)}
+          <p className={`text-4xl font-extrabold ${data.auditRatio > 1.5 ? 'text-green-500' : data.auditRatio < 1 ? 'text-red-500' : 'text-yellow-500'}`}>
+          <span>{data.auditRatio.toFixed(1)}</span>
+          <span className='text-base'>{data.auditRatio > 1.5 ? ' Perfect' : data.auditRatio < 1 ? ' Careful buddy!' : ' You can do better!'} </span>
+            
           </p>
         </div>
       </CardContent>
