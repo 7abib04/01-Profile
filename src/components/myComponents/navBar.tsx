@@ -2,14 +2,12 @@ import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
+import handleLogout from "@/app/functions/logout";
 
 export default function Navbar() {
   const router = useRouter();
 
-  const handleLogout = () => {
-    localStorage.removeItem("jwt");
-    window.location.href = '/';
-  };
+  
 
   return (
     <nav className="bg-gray-800 border-b border-gray-700">

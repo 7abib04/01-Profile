@@ -12,6 +12,7 @@ import Navbar from '@/components/myComponents/navBar';
 import ProjectList from '@/components/myComponents/ProjectsList';
 import Loading from '@/components/myComponents/loading';
 import AuditList from '@/components/myComponents/auditList';
+import Errorview from '@/components/myComponents/error';
 
 const GET_USER_PROFILE = gql`
   query GetUserProfile {
@@ -121,10 +122,7 @@ export default function Profile() {
 
   if (error || !data) {
     return (
-      <div className="profile-container">
-        <h1>Profile Page</h1>
-        <p style={{ color: 'red' }}>Error loading data. {error?.message}</p>
-      </div>
+      <Errorview message="Error fetching user data" />
     );
   }
 
