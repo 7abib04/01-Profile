@@ -1,21 +1,25 @@
 'use client';
 
-import { HandleLogin } from "@/app/functions/loginHandler"; // Use named import
+import { HandleLogin } from "@/app/functions/loginHandler"; 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AtSign, Lock, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import ErrorAlert from "@/components/myComponents/alert";
 
 export  function LoginForm() {
   const router = useRouter();
-
+  const [error, setError] = useState<string | null>(null);
   return (
     <>
 
+   
+
     <form
       className="space-y-6"
-      onSubmit={(e) => HandleLogin(e, router)} // Pass router correctly
+      onSubmit={(e) => HandleLogin(e, router,setError)}
     >
       <div className="space-y-6">
         <div className="space-y-2">
@@ -60,6 +64,9 @@ export  function LoginForm() {
         <ArrowRight className="ml-2" size={20} />
       </Button>
     </form>
+    {error&&(
+      <ErrorAlert message={error}/>
+    )}
     </>
   );
 }
